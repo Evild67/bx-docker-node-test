@@ -1,5 +1,5 @@
 
-
+const puppeteer = require('puppeteer')
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
@@ -12,6 +12,7 @@ app.post('/init', function (req, res) {
 app.post('/run', async function (req, res) {
   var meta = (req.body || {}).meta;
   var value = (req.body || {}).value;
+  console.log(value)
   var payload = value.payload;
   if (typeof payload != 'string')
     payload = JSON.stringify(payload);
@@ -21,8 +22,8 @@ app.post('/run', async function (req, res) {
 
   const page = await browser.newPage();
   await page.goto('https://news.ycombinator.com');
-  const title = page.title()
-  await browser.close()
+  const title = await page.title()
+
   var result = {
     'result': {
       'msg': 'echo',
@@ -30,6 +31,9 @@ app.post('/run', async function (req, res) {
     }
   };
   res.status(200).json(result);
+  await browser.close()
 });
 
-app.listen(8080, function () {})
+app.listen(8080, function () {
+  console.log('ok')
+})
